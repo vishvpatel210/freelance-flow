@@ -1,0 +1,69 @@
+import React, { SelectHTMLAttributes } from "react";
+
+interface Option {
+  label: string;
+  value: string | number;
+}
+
+interface FormSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+  label: string;
+  options: Option[];
+  error?: string;
+  helperText?: string;
+}
+
+export function FormSelect({
+  label,
+  options,
+  error,
+  helperText,
+  required,
+  className = "",
+  id,
+  ...props
+}: FormSelectProps) {
+  const selectId = id || label.toLowerCase().replace(/\s+/g, "-");
+
+  return (
+    <div className="space-y-1.5">
+      <label htmlFor={selectId} className="block text-xs font-semibold uppercase tracking-wider text-slate-700">
+        {label} {required && <span className="text-rose-500">*</span>}
+      </label>
+      <div className="relative">
+        <select
+          id={selectId}
+          required={required}
+          className={`w-full px-3.5 py-2.5 bg-white border rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 transition-all appearance-none cursor-pointer ${
+            error
+              ? "border-rose-300 focus:border-rose-500 focus:ring-rose-500/20"
+              : "border-slate-200 focus:border-indigo-500 focus:ring-indigo-500/20"
+          } ${className}`}
+          {...props}
+        >
+          {options.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
+          <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+            <path
+              fillRule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </div>
+      </div>
+      {error ? (
+        <p className="text-xs text-rose-500 font-medium">{error}</p>
+      ) : helperText ? (
+        <p className="text-xs text-slate-400">{helperText}</p>
+      ) : null}
+    </div>
+  );
+}
+
+export default FormSelect;
+
